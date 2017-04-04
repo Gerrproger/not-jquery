@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>F4ck jquery</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="f4ck-jquery.js"></script>
+</head>
+<body>
+<main>
+    <div class="test">
+        <span class="oh"></span>
+    </div>
+    <div class="test">
+        <i></i>
+    </div>
+    <div class="test">
+        <b></b>
+    </div>
+    <div>
+        <span id="ho" class="oh"></span>
+    </div>
+</main>
+
+<script>
+    f4(function () {
+        console.log('all is good', this);
+    });
+</script>
+</body>
+</html>
