@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.2
+ * @version  v0.3
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -87,13 +87,7 @@
                 query();
                 break;
             case 'object':
-                if (arg instanceof HTMLElement || arg instanceof NodeList) {
-                    if (arg === d.body) {
-                        def(arg);
-                    } else {
-                        query();
-                    }
-                } else if (arg instanceof HTMLDocument) {
+                if (arg instanceof HTMLElement || arg instanceof NodeList || arg instanceof HTMLDocument) {
                     def(arg);
                 } else {
                     def(d);
@@ -374,13 +368,14 @@
          */
         return function init(settings, success, fail) {
             var set = {
-                method: settings.method || 'GET',
+                method: settings.method.toUpperCase() || 'GET',
                 body: undef(settings.body) ? null : settings.body,
                 timeout: settings.timeout || 10000,
                 dataType: settings.dataType || 'auto'
             };
             var xhr = new XMLHttpRequest();
-            if (settings.params) {
+
+            if (set.method === 'GET' && settings.params) {
                 if (settings.url.match(/\?/)) {
                     settings.url += '&';
                 } else {
@@ -399,6 +394,11 @@
                     set.body = new FormData(new F4(settings.form)[0]);
                 }
             }
+            else if ((set.method === 'POST' || set.method === 'PUT') && set.body === null && settings.params) {
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                set.body = JSON.stringify(settings.params);
+            }
+
             if (settings.headers) {
                 each(settings.headers, function (h) {
                     xhr.setRequestHeader(h, settings.headers[h]);
@@ -505,7 +505,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = F4.prototype;
-    f4.version = 0.2;
+    f4.version = 0.3;
 
     return f4;
 }));
