@@ -1,4 +1,24 @@
-;(function () {
+/*!
+ * F4ck jquery
+ * @version  v0.2
+ * @author   Gerrproger
+ * Website:  http://gerrproger.github.io/f4ck-jquery
+ * Repo:     http://github.com/gerrproger/f4ck-jquery
+ * Issues:   http://github.com/gerrproger/f4ck-jquery/issues
+ */
+;(function (root, factory) {
+    "use strict";
+
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        module.exports = factory(root, document);
+    } else if (typeof define === 'function' && define.amd) {
+        define(null, function () {
+            factory(root, document);
+        });
+    } else {
+        root.f4 = factory(root, document);
+    }
+}(typeof window !== 'undefined' ? window : this, function (window, document) {
     "use strict";
 
     var d = document;
@@ -232,6 +252,49 @@
         return undef(arg) ? res : this;
     };
 
+    F4.prototype.attr = function (name, val) {
+        var res = [];
+        this.forEach(function (el) {
+            if (undef(val)) {
+                res.push(tryParse(el.getAttribute(name)));
+            } else {
+                el.setAttribute(name, val);
+            }
+        });
+        if (res.length === 1) {
+            res = res[0];
+        }
+
+        return undef(val) ? res : this;
+    };
+
+    F4.prototype.data = function (arg) {
+        var dat = 'data-';
+        if (typeof arg === 'object') {
+            each(arg, function (key) {
+                this.attr(dat + toDashed(key), arg[key]);
+            }.bind(this));
+            return this;
+        }
+        if (!undef(arg)) {
+            return this.attr(dat + toDashed(arg));
+        }
+        var res = this.map(function (el) {
+            var data = {};
+            makeArray(el.attributes).forEach(function (obj) {
+                if (obj.name.substr(0, 5) === dat) {
+                    data[toCamelCased(obj.name.slice(5))] = tryParse(obj.value);
+                }
+            });
+            return data;
+        });
+        if (res.length === 1) {
+            res = res[0];
+        }
+
+        return res;
+    };
+
     F4.prototype.remove = function () {
         this.forEach(function (el) {
             el.parentElement.removeChild(el);
@@ -259,14 +322,13 @@
     };
 
     F4.prototype.hasClass = function (arg) {
-        var res = [];
         var has = true;
-        this.forEach(function (el) {
+        var res = this.map(function (el) {
             var is = el.classList.contains(arg);
-            res.push(is);
             if (!is) {
                 has = is;
             }
+            return is;
         });
         if (has) {
             res = has;
@@ -293,21 +355,23 @@
         };
     };
 
-    /* settings:
-     *  url
-     *  method
-     *  user
-     *  password
-     *  body
-     *  form
-     *  timeout
-     *  params
-     *  headers
-     *  dataType (html, json, text, auto)
-     *  beforeSend
-     *  overrideMimeType
-     * */
+
     var Ajax = function Ajax() {
+        /**
+         * @param {object} settings
+         * @param {string} settings.url
+         * @param {string} settings.method
+         * @param {string} settings.user
+         * @param {string} settings.password
+         * @param {string} settings.body
+         * @param {object} settings.form
+         * @param {number} settings.timeout
+         * @param {object} settings.params
+         * @param {object} settings.headers
+         * @param {string} settings.dataType (html, json, text, auto)
+         * @param {function} settings.beforeSend
+         * @param {string} settings.overrideMimeType
+         */
         return function init(settings, success, fail) {
             var set = {
                 method: settings.method || 'GET',
@@ -414,15 +478,34 @@
         return arg === undefined;
     }
 
-
-    function f4(arg) {
-        f4.ajax = new Ajax;
-        f4.create = new Create;
-        f4.proto = F4.prototype;
-        f4.version = 0.1;
-
-        return new F4(arg);
+    function toDashed(arg) {
+        return arg.replace(/([A-Z])/g, function (match) {
+            return "-" + match.toLowerCase();
+        });
     }
 
-    window.f4 = f4;
-})();
+    function toCamelCased(arg) {
+        return arg.replace(/-([a-z])/g, function (match) {
+            return match[1].toUpperCase();
+        });
+    }
+
+    function tryParse(arg) {
+        try {
+            return JSON.parse(arg);
+        } catch (e) {
+            return arg;
+        }
+    }
+
+
+    var f4 = function f4(arg) {
+        return new F4(arg);
+    };
+    f4.ajax = new Ajax;
+    f4.create = new Create;
+    f4.proto = F4.prototype;
+    f4.version = 0.2;
+
+    return f4;
+}));
