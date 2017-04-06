@@ -27,11 +27,18 @@
             font-style: normal;
             color: #ff0000;
         }
+
+        .works {
+            text-align: center;
+            font-size: 18px;
+        }
     </style>
-    <script src="f4ck-jquery.js"></script>
+    <script src="src/f4ck-browser.js"></script>
+    <script src="src/f4ck-jquery.js"></script>
     <script>
         f4(function () {
             console.log('all is good', this);
+            f4('main')[0].appendChild(f4.create('<div class="works">Works!</div>')[0]);
         });
     </script>
 </head>

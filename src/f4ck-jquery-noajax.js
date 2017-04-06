@@ -1,5 +1,5 @@
 /*!
- * F4ck jquery
+ * F4ck jquery no ajax
  * @version  v0.3.1
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
@@ -22,20 +22,24 @@
     "use strict";
 
     var d = document;
+    var f4Browser = window.f4Browser;
     var events = {};
 
     var F4 = function F4(arg) {
+        if (f4Browser && !f4Browser.good) {
+            return;
+        }
         this.length = 0;
         this._addArrayProtos();
         return this.init(arg);
     };
+    var f4Proto = F4.prototype;
 
-    F4.prototype.init = function (arg) {
+    f4Proto.init = function (arg) {
         this.find(arg);
 
         if (typeof arg === 'function') {
-            var state = d.readyState;
-            if (state === 'interactive' || state === 'complete') {
+            if (d.readyState === 'complete') {
                 arg.apply(d);
             } else {
                 this.on('DOMContentLoaded', arg);
@@ -45,7 +49,7 @@
         return this;
     };
 
-    F4.prototype._addArrayProtos = function () {
+    f4Proto._addArrayProtos = function () {
         var prototypes = Object.getOwnPropertyNames(Array.prototype);
         each(prototypes, function (i) {
             var name = prototypes[i];
@@ -54,16 +58,16 @@
                 case 'constructor':
                     break;
                 case 'find':
-                    F4.prototype['findIn'] = Array.prototype[name];
+                    f4Proto['findIn'] = Array.prototype[name];
                     break;
                 default:
-                    F4.prototype[name] = Array.prototype[name];
+                    f4Proto[name] = Array.prototype[name];
             }
         });
         return this;
     };
 
-    F4.prototype._fill = function (els) {
+    f4Proto._fill = function (els) {
         this.forEach(function (el, i) {
             delete this[i];
         }, this);
@@ -79,9 +83,10 @@
         return this;
     };
 
-    F4.prototype.find = function (arg) {
+    f4Proto.find = function (arg) {
         var self = this;
         var elements = [];
+        var HTMLDocument = HTMLDocument || Document;
         switch (typeof arg) {
             case 'string':
                 query();
@@ -114,7 +119,7 @@
         return this._fill(elements);
     };
 
-    F4.prototype.on = function (ev, f, hash) {
+    f4Proto.on = function (ev, f, hash) {
         if (undef(hash)) {
             hash = 'default';
         }
@@ -141,7 +146,7 @@
         return this;
     };
 
-    F4.prototype.off = function (ev, hash) {
+    f4Proto.off = function (ev, hash) {
         var noHash = undef(hash);
         this.forEach(function (el) {
             if (events[el]) {
@@ -188,7 +193,7 @@
         return this;
     };
 
-    F4.prototype.parent = function (arg) {
+    f4Proto.parent = function (arg) {
         var res = [];
         var matches;
         if (!undef(arg)) {
@@ -214,7 +219,7 @@
         return this._fill(res);
     };
 
-    F4.prototype.html = function (arg) {
+    f4Proto.html = function (arg) {
         var res = [];
         this.forEach(function (el) {
             if (undef(arg)) {
@@ -230,7 +235,7 @@
         return undef(arg) ? res : this;
     };
 
-    F4.prototype.text = function (arg) {
+    f4Proto.text = function (arg) {
         var res = [];
         this.forEach(function (el) {
             if (undef(arg)) {
@@ -246,7 +251,7 @@
         return undef(arg) ? res : this;
     };
 
-    F4.prototype.attr = function (name, val) {
+    f4Proto.attr = function (name, val) {
         var res = [];
         this.forEach(function (el) {
             if (undef(val)) {
@@ -262,7 +267,7 @@
         return undef(val) ? res : this;
     };
 
-    F4.prototype.data = function (arg) {
+    f4Proto.data = function (arg) {
         var dat = 'data-';
         if (typeof arg === 'object') {
             each(arg, function (key) {
@@ -289,7 +294,7 @@
         return res;
     };
 
-    F4.prototype.remove = function () {
+    f4Proto.remove = function () {
         this.forEach(function (el) {
             el.parentElement.removeChild(el);
         });
@@ -297,7 +302,7 @@
         return this;
     };
 
-    F4.prototype.addClass = function () {
+    f4Proto.addClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
             el.classList.add.apply(el.classList, classes);
@@ -306,7 +311,7 @@
         return this;
     };
 
-    F4.prototype.removeClass = function () {
+    f4Proto.removeClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
             el.classList.remove.apply(el.classList, classes);
@@ -315,7 +320,7 @@
         return this;
     };
 
-    F4.prototype.hasClass = function (arg) {
+    f4Proto.hasClass = function (arg) {
         var has = true;
         var res = this.map(function (el) {
             var is = el.classList.contains(arg);
@@ -333,7 +338,7 @@
         return res;
     };
 
-    F4.prototype.toggleClass = function (arg) {
+    f4Proto.toggleClass = function (arg) {
         this.forEach(function (el) {
             el.classList.toggle(arg);
         });
@@ -346,112 +351,6 @@
         return function init(str) {
             var res = new DOMParser().parseFromString(str, 'text/html');
             return new F4(res).find('body > *');
-        };
-    };
-
-
-    var Ajax = function Ajax() {
-        /**
-         * @param {object} settings
-         * @param {string} settings.url
-         * @param {string} settings.method
-         * @param {string} settings.user
-         * @param {string} settings.password
-         * @param {string} settings.body
-         * @param {object} settings.form
-         * @param {number} settings.timeout
-         * @param {object} settings.params
-         * @param {object} settings.headers
-         * @param {string} settings.dataType (html, json, text, auto)
-         * @param {function} settings.beforeSend
-         * @param {string} settings.overrideMimeType
-         */
-        return function init(settings, success, fail) {
-            var set = {
-                method: settings.method.toUpperCase() || 'GET',
-                body: undef(settings.body) ? null : settings.body,
-                timeout: settings.timeout || 10000,
-                dataType: settings.dataType || 'auto'
-            };
-            var xhr = new XMLHttpRequest();
-
-            if (set.method === 'GET' && settings.params) {
-                if (settings.url.match(/\?/)) {
-                    settings.url += '&';
-                } else {
-                    settings.url += '?';
-                }
-                settings.url += Object.keys(settings.params).map(function (key) {
-                    return key + '=' + encodeURIComponent(settings.params[key]);
-                }).join('&');
-            }
-            xhr.open(set.method, settings.url, true, settings.user, settings.password);
-            xhr.timeout = set.timeout;
-
-            if (settings.form) {
-                xhr.setRequestHeader('Content-Type', 'multipart/form-data; charset=UTF-8');
-                if (set.body === null) {
-                    set.body = new FormData(new F4(settings.form)[0]);
-                }
-            }
-            else if ((set.method === 'POST' || set.method === 'PUT') && set.body === null && settings.params) {
-                xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                set.body = JSON.stringify(settings.params);
-            }
-
-            if (settings.headers) {
-                each(settings.headers, function (h) {
-                    xhr.setRequestHeader(h, settings.headers[h]);
-                });
-            }
-            if (settings.overrideMimeType) {
-                xhr.overrideMimeType(settings.overrideMimeType);
-            }
-
-            if (settings.beforeSend) {
-                settings.beforeSend(xhr);
-            }
-            xhr.send(set.body);
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState !== 4) {
-                    return;
-                }
-
-                if (xhr.status === 200 && success) {
-                    success(xhr, response(xhr));
-                } else if (fail) {
-                    fail(xhr);
-                }
-            };
-
-            function response(xhr) {
-                var str = xhr.responseText;
-                if (set.dataType === 'auto') {
-                    var contentType = xhr.getResponseHeader('Content-Type').split(/;/)[0];
-                    switch (contentType) {
-                        case 'text/html':
-                            set.dataType = 'html';
-                            break;
-                        case 'application/json':
-                            set.dataType = 'json';
-                            break;
-                        case 'text/plain':
-                            set.dataType = 'text';
-                    }
-                }
-                switch (set.dataType) {
-                    case 'html':
-                        return new Create()(str);
-                    case 'json':
-                        return JSON.parse(str);
-                    case 'text':
-                    default:
-                        return str;
-                }
-            }
-
-            return this;
         };
     };
 
@@ -502,10 +401,13 @@
     var f4 = function f4(arg) {
         return new F4(arg);
     };
-    f4.ajax = new Ajax;
     f4.create = new Create;
-    f4.proto = F4.prototype;
+    f4.proto = f4Proto;
     f4.version = '0.3.1';
+    f4.noAjax = true;
+    if (f4Browser) {
+        f4.supported = f4Browser.good;
+    }
 
     return f4;
 }));
