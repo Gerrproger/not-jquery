@@ -5,7 +5,7 @@ describe("F4ck-jquery object", function () {
     });
 
     it("should contain 'ajax' function", function () {
-        expect(typeof window.f4.ajax).toBe('function');
+        expect(typeof f4.ajax).toBe('function');
     });
 
     it("should contain 'create' function", function () {
@@ -17,7 +17,7 @@ describe("F4ck-jquery object", function () {
     });
 
     it("should contain version number", function () {
-        expect(typeof f4.version).toBe('number');
+        expect(typeof f4.version).toBeDefined();
     });
 
     it("should return object-like array", function () {

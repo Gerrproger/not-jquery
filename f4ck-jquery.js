@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.3
+ * @version  v0.3.1
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -505,7 +505,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = F4.prototype;
-    f4.version = 0.3;
+    f4.version = '0.3.1';
 
     return f4;
 }));
