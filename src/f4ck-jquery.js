@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.3.1
+ * @version  v0.4.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -23,7 +23,6 @@
 
     var d = document;
     var f4Browser = window.f4Browser;
-    var events = {};
 
     var F4 = function F4(arg) {
         if (f4Browser && !f4Browser.good) {
@@ -124,21 +123,22 @@
             hash = 'default';
         }
         this.forEach(function (el) {
-            if (events[el]) {
-                if (events[el][ev]) {
-                    if (events[el][ev][hash]) {
-                        events[el][ev][hash].push(f);
+            var evs = el.f4Events;
+            if (evs) {
+                if (evs[ev]) {
+                    if (evs[ev][hash]) {
+                        evs[ev][hash].push(f);
                     } else {
-                        events[el][ev][hash] = [f];
+                        evs[ev][hash] = [f];
                     }
                 } else {
-                    events[el][ev] = {};
-                    events[el][ev][hash] = [f];
+                    evs[ev] = {};
+                    evs[ev][hash] = [f];
                 }
             } else {
-                events[el] = {};
-                events[el][ev] = {};
-                events[el][ev][hash] = [f];
+                evs = el.f4Events = {};
+                evs[ev] = {};
+                evs[ev][hash] = [f];
             }
             el.addEventListener(ev, f);
         });
@@ -149,41 +149,44 @@
     f4Proto.off = function (ev, hash) {
         var noHash = undef(hash);
         this.forEach(function (el) {
-            if (events[el]) {
+            var evs = el.f4Events;
+            if (evs) {
                 if (!ev) {
                     if (noHash) {
-                        each(events[el], function (e) {
-                            each(events[el][e], function (h) {
-                                events[el][e][h].forEach(function (f) {
+                        each(evs, function (e) {
+                            each(evs[e], function (h) {
+                                evs[e][h].forEach(function (f) {
                                     el.removeEventListener(e, f);
                                 });
                             });
                         });
-                        delete events[el];
+                        delete el.f4Events;
                     } else {
-                        each(events[el], function (e) {
-                            if (events[el][e][hash]) {
-                                events[el][e][hash].forEach(function (f) {
+                        each(evs, function (e) {
+                            if (evs[e][hash]) {
+                                evs[e][hash].forEach(function (f) {
                                     el.removeEventListener(e, f);
                                 });
-                                delete events[el][e][hash];
+                                delete evs[e][hash];
                             }
                         });
                     }
                 } else {
                     if (noHash) {
-                        each(events[el][ev], function (h) {
-                            events[el][ev][h].forEach(function (f) {
-                                el.removeEventListener(ev, f);
+                        if (evs[ev]) {
+                            each(evs[ev], function (h) {
+                                evs[ev][h].forEach(function (f) {
+                                    el.removeEventListener(ev, f);
+                                });
                             });
-                        });
-                        delete events[el][ev];
+                            delete evs[ev];
+                        }
                     } else {
-                        if (events[el][ev][hash]) {
-                            events[el][ev][hash].forEach(function (f) {
+                        if (evs[ev] && evs[ev][hash]) {
+                            evs[ev][hash].forEach(function (f) {
                                 el.removeEventListener(ev, f);
                             });
-                            delete events[el][ev][hash];
+                            delete evs[ev][hash];
                         }
                     }
                 }
@@ -220,51 +223,43 @@
     };
 
     f4Proto.html = function (arg) {
-        var res = [];
-        this.forEach(function (el) {
+        var res = this.map(function (el) {
             if (undef(arg)) {
-                res.push(el.innerHTML.trim());
-            } else {
-                el.innerHTML = arg;
+                return el.innerHTML.trim();
             }
+            el.innerHTML = arg;
         });
-        if (res.length === 1) {
-            res = res[0];
-        }
 
-        return undef(arg) ? res : this;
+        return undef(arg) ? arrUnwrap(res) : this;
     };
 
     f4Proto.text = function (arg) {
-        var res = [];
-        this.forEach(function (el) {
+        var res = this.map(function (el) {
             if (undef(arg)) {
-                res.push(el.textContent.trim());
-            } else {
-                el.textContent = arg;
+                return el.textContent.trim();
             }
+            el.textContent = arg;
         });
-        if (res.length === 1) {
-            res = res[0];
-        }
 
-        return undef(arg) ? res : this;
+        return undef(arg) ? arrUnwrap(res) : this;
     };
 
     f4Proto.attr = function (name, val) {
-        var res = [];
-        this.forEach(function (el) {
+        var res = this.map(function (el) {
             if (undef(val)) {
-                res.push(tryParse(el.getAttribute(name)));
-            } else {
-                el.setAttribute(name, val);
+                if (undef(name)) {
+                    var obj = {};
+                    makeArray(el.attributes).forEach(function (at) {
+                        obj[at.name] = tryParse(at.value);
+                    });
+                    return obj;
+                }
+                return tryParse(el.getAttribute(name));
             }
+            el.setAttribute(name, val);
         });
-        if (res.length === 1) {
-            res = res[0];
-        }
 
-        return undef(val) ? res : this;
+        return undef(val) ? arrUnwrap(res) : this;
     };
 
     f4Proto.data = function (arg) {
@@ -278,20 +273,24 @@
         if (!undef(arg)) {
             return this.attr(dat + toDashed(arg));
         }
-        var res = this.map(function (el) {
+        var res = this.attr();
+        if (res) {
+            if (res.length) {
+                return res.map(findData);
+            }
+            return findData(res);
+        }
+        return res;
+
+        function findData(obj) {
             var data = {};
-            makeArray(el.attributes).forEach(function (obj) {
-                if (obj.name.substr(0, 5) === dat) {
-                    data[toCamelCased(obj.name.slice(5))] = tryParse(obj.value);
+            each(obj, function (key) {
+                if (key.substr(0, 5) === dat) {
+                    data[toCamelCased(key.slice(5))] = obj[key];
                 }
             });
             return data;
-        });
-        if (res.length === 1) {
-            res = res[0];
         }
-
-        return res;
     };
 
     f4Proto.remove = function () {
@@ -331,11 +330,9 @@
         });
         if (has) {
             res = has;
-        } else if (res.length === 1) {
-            res = res[0];
         }
 
-        return res;
+        return arrUnwrap(res);
     };
 
     f4Proto.toggleClass = function (arg) {
@@ -503,6 +500,13 @@
         }
     }
 
+    function arrUnwrap(arr) {
+        if (arr.length < 2) {
+            return arr[0];
+        }
+        return arr;
+    }
+
 
     var f4 = function f4(arg) {
         return new F4(arg);
@@ -510,7 +514,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.3.1';
+    f4.version = '0.4.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
