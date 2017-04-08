@@ -11,10 +11,12 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             font-size: 14px;
             color: #333;
+            cursor: default;
         }
 
-        .hidden {
-            display: none;
+        main {
+            text-align: center;
+            padding: 20px;
         }
 
         header {
@@ -28,8 +30,24 @@
             color: #ff0000;
         }
 
-        .works {
-            text-align: center;
+        .download {
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 2px;
+            margin: 4px 10px;
+            color: #ff0018;
+            transition: color .2s;
+        }
+
+        a:hover {
+            color: #a50015;
+        }
+
+        .link, .works {
             font-size: 18px;
         }
     </style>
@@ -38,8 +56,12 @@
     <script>
         f4(function () {
             console.log('all is good', this);
-            f4('main')[0].appendChild(f4.create('<div class="works">Works!</div>')[0]);
+            var main = f4('main')[0];
+            main.insertBefore(f4.create('<div class="works">Works!</div>')[0], main.firstChild);
         });
+        if(f4.supported === false) {
+            alert('F4 does not work in this bad browser!');
+        }
     </script>
 </head>
 <body>
@@ -47,19 +69,15 @@
     <i>F4</i>ck jquery
 </header>
 <main>
-    <div class="test">
-        <span class="oh"></span>
+    <div class="download">
+        <a download href="dist/f4ck-jquery.min.js" target="_blank">Download compressed F4ck-jquery</a>
+        <a download href="dist/f4ck-jquery-noajax.min.js" target="_blank">Download compressed version without Ajax</a>
+        <a download href="dist/f4ck-browser.min.js" target="_blank">Download compressed F4ck-browser</a>
+        <a download href="src/f4ck-jquery.js" target="_blank">Download uncompressed F4ck-jquery</a>
     </div>
-    <div class="test">
-        <i></i>
-    </div>
-    <div id="data" class="test" data-what="it" data-n="123">
-        <b></b>
-    </div>
-    <div data-attribute>
-        <span id="ho" class="oh"></span>
-    </div>
-    <button class="hidden">BUTTON</button>
+
+    <a class="link" href="tests/SpecRunner.html" target="_blank">Open Tests</a>
+    <a class="link" href="https://github.com/Gerrproger/f4ck-jquery" target="_blank">Open GitHub</a>
 </main>
 </body>
 </html>

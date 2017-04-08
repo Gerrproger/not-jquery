@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.4.0
+ * @version  v0.5.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -28,24 +28,23 @@
         if (f4Browser && !f4Browser.good) {
             return;
         }
-        this.length = 0;
         this._addArrayProtos();
         return this.init(arg);
     };
     var f4Proto = F4.prototype;
 
     f4Proto.init = function (arg) {
-        this.find(arg);
+        var ret = this.find(arg);
 
         if (typeof arg === 'function') {
-            if (d.readyState === 'complete') {
+            if (d.readyState === 'complete' || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
                 arg.apply(d);
             } else {
-                this.on('DOMContentLoaded', arg);
+                ret.on('DOMContentLoaded', arg);
             }
         }
 
-        return this;
+        return ret;
     };
 
     f4Proto._addArrayProtos = function () {
@@ -67,19 +66,19 @@
     };
 
     f4Proto._fill = function (els) {
-        this.forEach(function (el, i) {
-            delete this[i];
-        }, this);
+        var res = new Function;
+        res.prototype = f4Proto;
+        res = new res;
 
         els = els.filter(function (item, pos) {
             return els.indexOf(item) === pos;
         });
         els.forEach(function (el, i) {
-            this[i] = el;
-        }, this);
-        this.length = els.length;
+            res[i] = el;
+        });
+        res.length = els.length;
 
-        return this;
+        return res;
     };
 
     f4Proto.find = function (arg) {
@@ -196,23 +195,16 @@
         return this;
     };
 
-    f4Proto.parent = function (arg) {
+    f4Proto.closest = function (arg) {
         var res = [];
-        var matches;
-        if (!undef(arg)) {
-            matches = new F4(arg);
-        }
         this.forEach(function (el) {
-            if (undef(arg)) {
+            if (undef(arg) && el.parentElement) {
                 res.push(el.parentElement);
             } else {
                 while (el = el.parentElement) {
-                    if (matches.some(function (match) {
-                            if (match === el) {
-                                res.push(match);
-                                return true;
-                            }
-                        })) {
+                    el.matches = el.matches || el.msMatchesSelector;
+                    if (el.matches(arg)) {
+                        res.push(el);
                         break;
                     }
                 }
@@ -514,7 +506,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.4.0';
+    f4.version = '0.5.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
