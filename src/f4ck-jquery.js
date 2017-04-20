@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.5.0
+ * @version  v0.6.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -90,7 +90,10 @@
                 query();
                 break;
             case 'object':
-                if (arg instanceof HTMLElement || arg instanceof NodeList || arg instanceof HTMLDocument) {
+                if (arg instanceof HTMLElement ||
+                    arg instanceof NodeList ||
+                    arg instanceof HTMLCollection ||
+                    arg instanceof HTMLDocument) {
                     def(arg);
                 } else {
                     def(d);
@@ -311,6 +314,14 @@
         return this;
     };
 
+    f4Proto.toggleClass = function (cl) {
+        this.forEach(function (el) {
+            el.classList.toggle(cl);
+        });
+
+        return this;
+    };
+
     f4Proto.hasClass = function (arg) {
         var has = true;
         var res = this.map(function (el) {
@@ -327,19 +338,33 @@
         return arrUnwrap(res);
     };
 
-    f4Proto.toggleClass = function (arg) {
-        this.forEach(function (el) {
-            el.classList.toggle(arg);
-        });
-
-        return this;
+    f4Proto.transitionEnd = function (f, target, propName, pseudoEl) {
+        return this.on('transitionend', function (ev) {
+            var bf = f.bind(this, ev);
+            if ((propName && propName !== ev.propertyName) || (pseudoEl && ('::' + pseudoEl) !== ev.pseudoElement)) {
+                return;
+            }
+            if (target instanceof HTMLElement) {
+                if (ev.target === target) {
+                    return bf();
+                }
+                return;
+            }
+            if (target !== 'all') {
+                if (ev.target === this) {
+                    return bf();
+                }
+                return;
+            }
+            return bf();
+        }, 'f4TransitionEnd');
     };
 
 
     var Create = function Create() {
         return function init(str) {
             var res = new DOMParser().parseFromString(str, 'text/html');
-            return new F4(res).find('body > *');
+            return new F4(res.body.children);
         };
     };
 
@@ -506,7 +531,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.5.0';
+    f4.version = '0.6.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
