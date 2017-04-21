@@ -49,6 +49,10 @@
         .link, .works {
             font-size: 18px;
         }
+
+        .works i {
+            font-size: 13px;
+        }
     </style>
     <script src="src/f4ck-browser.js"></script>
     <script src="src/f4ck-jquery.js"></script>
@@ -56,9 +60,9 @@
         f4(function () {
             console.log('all is good', this);
             var main = f4('main')[0];
-            main.insertBefore(f4.create('<div class="works">Works!</div>')[0], main.firstChild);
+            main.insertBefore(f4.create('<div class="works">Works! <i>(v' + f4.version + ')</i></div>')[0], main.firstChild);
         });
-        if(f4.supported === false) {
+        if (f4.supported === false) {
             alert('F4 does not work in this bad browser!');
         }
     </script>
@@ -74,9 +78,10 @@
         <a download href="dist/f4ck-browser.min.js" target="_blank">Download compressed F4ck-browser</a>
         <a download href="src/f4ck-jquery.js" target="_blank">Download uncompressed F4ck-jquery</a>
     </div>
-
-    <a class="link" href="tests/SpecRunner.html" target="_blank">Open Tests</a>
-    <a class="link" href="https://github.com/Gerrproger/f4ck-jquery" target="_blank">Open GitHub</a>
+    <div>
+        <a class="link" href="tests/SpecRunner.html" target="_blank">Open Tests</a>
+        <a class="link" href="https://github.com/Gerrproger/f4ck-jquery" target="_blank">Open GitHub</a>
+    </div>
 </main>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.6.0
+ * @version  v0.6.1
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -66,9 +66,7 @@
     };
 
     f4Proto._fill = function (els) {
-        var res = new Function;
-        res.prototype = f4Proto;
-        res = new res;
+        var res = Object.create(f4Proto);
 
         els = els.filter(function (item, pos) {
             return els.indexOf(item) === pos;
@@ -531,7 +529,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.6.0';
+    f4.version = '0.6.1';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
