@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.6.1
+ * @version  v0.7.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -286,6 +286,20 @@
         }
     };
 
+    f4Proto.removeAttr = function (arg) {
+        this.forEach(function (el) {
+            el.removeAttribute(arg);
+        });
+
+        return this;
+    };
+
+    f4Proto.removeData = function (arg) {
+        arg = 'data-' + toDashed(arg);
+
+        return this.removeAttr(arg);
+    };
+
     f4Proto.remove = function () {
         this.forEach(function (el) {
             el.parentElement.removeChild(el);
@@ -529,7 +543,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.6.1';
+    f4.version = '0.7.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
