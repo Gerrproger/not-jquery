@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery no Ajax
- * @version  v0.7.0
+ * @version  v0.7.1
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -215,6 +215,14 @@
         return this._fill(res);
     };
 
+    f4Proto.remove = function () {
+        this.forEach(function (el) {
+            el.parentElement.removeChild(el);
+        });
+
+        return this;
+    };
+
     f4Proto.html = function (arg) {
         var res = this.map(function (el) {
             if (undef(arg)) {
@@ -300,14 +308,6 @@
         return this.removeAttr(arg);
     };
 
-    f4Proto.remove = function () {
-        this.forEach(function (el) {
-            el.parentElement.removeChild(el);
-        });
-
-        return this;
-    };
-
     f4Proto.addClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
@@ -326,9 +326,12 @@
         return this;
     };
 
-    f4Proto.toggleClass = function (cl) {
+    f4Proto.toggleClass = function () {
+        var classes = prettyClass(arguments);
         this.forEach(function (el) {
-            el.classList.toggle(cl);
+            makeArray(classes).forEach(function (cl) {
+                el.classList.toggle(cl);
+            });
         });
 
         return this;
@@ -336,15 +339,22 @@
 
     f4Proto.hasClass = function (arg) {
         var has = true;
+        var notHas = true;
         var res = this.map(function (el) {
             var is = el.classList.contains(arg);
             if (!is) {
                 has = is;
+            } else {
+                notHas = !is;
             }
             return is;
         });
+
         if (has) {
-            res = has;
+            return true;
+        }
+        if (notHas) {
+            return false;
         }
 
         return arrUnwrap(res);
@@ -436,7 +446,7 @@
     };
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.7.0';
+    f4.version = '0.7.1';
     f4.noAjax = true;
     if (f4Browser) {
         f4.supported = f4Browser.good;
