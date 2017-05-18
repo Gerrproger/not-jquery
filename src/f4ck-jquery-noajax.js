@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery no Ajax
- * @version  v0.7.1
+ * @version  v0.7.2
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -311,7 +311,9 @@
     f4Proto.addClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
-            el.classList.add.apply(el.classList, classes);
+            makeArray(classes).forEach(function (cl) {
+                el.classList.add(cl);
+            });
         });
 
         return this;
@@ -320,7 +322,9 @@
     f4Proto.removeClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
-            el.classList.remove.apply(el.classList, classes);
+            makeArray(classes).forEach(function (cl) {
+                el.classList.remove(cl);
+            });
         });
 
         return this;
@@ -446,7 +450,7 @@
     };
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.7.1';
+    f4.version = '0.7.2';
     f4.noAjax = true;
     if (f4Browser) {
         f4.supported = f4Browser.good;

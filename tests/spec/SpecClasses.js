@@ -8,9 +8,12 @@
         el.appendChild(el2);
         el.appendChild(el3);
 
-        el.classList.add('class1', 'class2');
-        el2.classList.add('class3', 'class4');
-        el3.classList.add('class5', 'class6');
+        el.classList.add('class1');
+        el.classList.add('class2');
+        el2.classList.add('class3');
+        el2.classList.add('class4');
+        el3.classList.add('class5');
+        el3.classList.add('class6');
     };
 
     describe("'addClass' method", function () {

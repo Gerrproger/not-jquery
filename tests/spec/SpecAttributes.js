@@ -9,6 +9,14 @@
         el.appendChild(el3);
     };
 
+    var findAttr = function findAttr(arr, name) {
+        for (var i = 0, l = arr.length; i < l; i++) {
+            if (arr[i].name === name) {
+                return arr[i].value;
+            }
+        }
+    };
+
     describe("'html' method", function () {
 
         inner1 = ' <span>1</span> ';
@@ -171,15 +179,11 @@
             $res2 = el3.attributes;
 
             expect($res.length).toBe(2);
-            expect($res[0].name).toBe('test3');
-            expect($res[0].value).toBe('val3');
-            expect($res[1].name).toBe('test5');
-            expect($res[1].value).toBe('val5');
+            expect(findAttr($res, 'test3')).toBe('val3');
+            expect(findAttr($res, 'test5')).toBe('val5');
             expect($res2.length).toBe(2);
-            expect($res2[0].name).toBe('test4');
-            expect($res2[0].value).toBe('val4');
-            expect($res2[1].name).toBe('test5');
-            expect($res2[1].value).toBe('val5');
+            expect(findAttr($res2, 'test4')).toBe('val4');
+            expect(findAttr($res2, 'test5')).toBe('val5');
         });
 
         it("should return all prototypes", function () {
@@ -249,23 +253,15 @@
             $res2 = el3.attributes;
 
             expect($res.length).toBe(4);
-            expect($res[0].name).toBe('data-test3');
-            expect($res[0].value).toBe('val3');
-            expect($res[1].name).toBe('not-data');
-            expect($res[1].value).toBe('yep');
-            expect($res[2].name).toBe('data-test-with-set');
-            expect($res[2].value).toBe('5');
-            expect($res[3].name).toBe('data-hop');
-            expect($res[3].value).toBe('hey');
+            expect(findAttr($res, 'data-test3')).toBe('val3');
+            expect(findAttr($res, 'not-data')).toBe('yep');
+            expect(findAttr($res, 'data-test-with-set')).toBe('5');
+            expect(findAttr($res, 'data-hop')).toBe('hey');
             expect($res2.length).toBe(4);
-            expect($res2[0].name).toBe('data-test4');
-            expect($res2[0].value).toBe('val4');
-            expect($res2[1].name).toBe('not-data');
-            expect($res2[1].value).toBe('yep');
-            expect($res2[2].name).toBe('data-test-with-set');
-            expect($res2[2].value).toBe('5');
-            expect($res2[3].name).toBe('data-hop');
-            expect($res2[3].value).toBe('hey');
+            expect(findAttr($res2, 'data-test4')).toBe('val4');
+            expect(findAttr($res2, 'not-data')).toBe('yep');
+            expect(findAttr($res2, 'data-test-with-set')).toBe('5');
+            expect(findAttr($res2, 'data-hop')).toBe('hey');
         });
 
         it("should return all prototypes", function () {
@@ -295,18 +291,15 @@
             $res2 = el3.attributes;
 
             expect($res.length).toBe(1);
-            expect($res[0].name).toBe('test5');
-            expect($res[0].value).toBe('val5');
+            expect(findAttr($res, 'test5')).toBe('val5');
             expect($res2.length).toBe(2);
 
 
             $f4.removeAttr('test6');
             expect($res.length).toBe(1);
-            expect($res[0].name).toBe('test5');
-            expect($res[0].value).toBe('val5');
+            expect(findAttr($res, 'test5')).toBe('val5');
             expect($res2.length).toBe(1);
-            expect($res2[0].name).toBe('test4');
-            expect($res2[0].value).toBe('val4');
+            expect(findAttr($res2, 'test4')).toBe('val4');
         });
 
         it("should return all prototypes", function () {
@@ -336,18 +329,15 @@
             $res2 = el3.attributes;
 
             expect($res.length).toBe(1);
-            expect($res[0].name).toBe('data-test5');
-            expect($res[0].value).toBe('val5');
+            expect(findAttr($res, 'data-test5')).toBe('val5');
             expect($res2.length).toBe(2);
 
 
             $f4.removeData('testWithCamelCase');
             expect($res.length).toBe(1);
-            expect($res[0].name).toBe('data-test5');
-            expect($res[0].value).toBe('val5');
+            expect(findAttr($res, 'data-test5')).toBe('val5');
             expect($res2.length).toBe(1);
-            expect($res2[0].name).toBe('test4');
-            expect($res2[0].value).toBe('val4');
+            expect(findAttr($res2, 'test4')).toBe('val4');
         });
 
         it("should return all prototypes", function () {
