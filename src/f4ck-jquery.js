@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery
- * @version  v0.7.2
+ * @version  v0.8.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -413,7 +413,7 @@
          */
         return function init(settings, success, fail) {
             var set = {
-                method: settings.method.toUpperCase() || 'GET',
+                method: (settings.method && settings.method.toUpperCase()) || 'GET',
                 body: undef(settings.body) ? null : settings.body,
                 timeout: settings.timeout || 10000,
                 dataType: settings.dataType || 'auto'
@@ -453,22 +453,23 @@
                 xhr.overrideMimeType(settings.overrideMimeType);
             }
 
-            if (settings.beforeSend) {
-                settings.beforeSend(xhr);
-            }
-            xhr.send(set.body);
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState !== 4) {
-                    return;
-                }
-
+            xhr.onload = function () {
                 if (xhr.status === 200 && success) {
                     success(xhr, response(xhr));
                 } else if (fail) {
                     fail(xhr);
                 }
             };
+            xhr.onerror = function () {
+                if (fail) {
+                    fail(xhr);
+                }
+            };
+
+            if (settings.beforeSend) {
+                settings.beforeSend(xhr);
+            }
+            xhr.send(set.body);
 
             function response(xhr) {
                 var str = xhr.responseText;
@@ -489,7 +490,7 @@
                     case 'html':
                         return new Create()(str);
                     case 'json':
-                        return JSON.parse(str);
+                        return tryParse(str);
                     case 'text':
                     default:
                         return str;
@@ -557,7 +558,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.7.2';
+    f4.version = '0.8.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
