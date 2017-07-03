@@ -58,5 +58,50 @@
             expect(onSuccess.calls.mostRecent().args[1]).toBe(response);
         });
 
+        it("should call 'beforeSend' function if specified", function () {
+            var onBeforeSend = jasmine.createSpy('onBeforeSend');
+            var url = '/test/this/path';
+            var response = 'response text';
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                beforeSend: onBeforeSend
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('GET');
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(onSuccess.calls.mostRecent().args[1]).toBe(response);
+            expect(onBeforeSend).toHaveBeenCalled();
+            expect(onBeforeSend.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
+        });
+
+        xit("should send form data with right header if specified 'form' attribute", function () {
+            var url = '/test/this/path';
+            var response = 'response text';
+            var el = document.createElement('form');
+            el.innerHTML = '<input name="field1" value="value1"/><input name="field2" value="value2"/>';
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                method: 'post',
+                form: el
+            }, onSuccess, onFailure);
+
+            console.log(1, jasmine.Ajax.requests.mostRecent());
+        });
+
     });
 })();
