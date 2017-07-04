@@ -1,6 +1,6 @@
 /*!
  * F4ck jquery no Ajax
- * @version  v0.8.0
+ * @version  v0.9.0
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/f4ck-jquery
  * Repo:     http://github.com/gerrproger/f4ck-jquery
@@ -88,12 +88,16 @@
                 query();
                 break;
             case 'object':
-                if (arg instanceof HTMLElement ||
+                if (arg instanceof HTMLFormElement) {
+                    def([arg]);
+                }
+                else if (arg instanceof HTMLElement ||
                     arg instanceof NodeList ||
                     arg instanceof HTMLCollection ||
                     arg instanceof HTMLDocument) {
                     def(arg);
-                } else {
+                }
+                else {
                     def(d);
                 }
                 break;
@@ -450,7 +454,7 @@
     };
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.8.0';
+    f4.version = '0.9.0';
     f4.noAjax = true;
     if (f4Browser) {
         f4.supported = f4Browser.good;

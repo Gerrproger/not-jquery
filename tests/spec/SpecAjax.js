@@ -83,9 +83,10 @@
             expect(onBeforeSend.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
         });
 
-        xit("should send form data with right header if specified 'form' attribute", function () {
+        it("should send form data with the right header if specified 'form' attribute", function () {
             var url = '/test/this/path';
             var response = 'response text';
+            var formObj = [{key: 'field1', val: 'value1'}, {key: 'field2', val: 'value2'}];
             var el = document.createElement('form');
             el.innerHTML = '<input name="field1" value="value1"/><input name="field2" value="value2"/>';
 
@@ -96,11 +97,229 @@
 
             f4.ajax({
                 url: url,
-                method: 'post',
                 form: el
             }, onSuccess, onFailure);
 
-            console.log(1, jasmine.Ajax.requests.mostRecent());
+            var request = jasmine.Ajax.requests.mostRecent();
+            var formData = request.params;
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('POST');
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(request.requestHeaders['Content-Type']).toBe('multipart/form-data; charset=UTF-8');
+            formObj.forEach(function (obj) {
+                expect(formData.get(obj.key)).toBe(obj.val);
+            });
+        });
+
+        it("should override MimeType if specified", function () {
+            var url = '/test/this/path';
+            var response = 'response text';
+            var mime = 'test/plain';
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                method: 'put',
+                overrideMimeType: mime
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('PUT');
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(request.overriddenMimeType).toBe(mime);
+        });
+
+        it("should set request headers if specified", function () {
+            var url = '/test/this/path';
+            var response = 'response text';
+            var headers = {
+                'Test-Header': 'test',
+                'Authorization': 'Basic'
+            };
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 403,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                headers: headers
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('GET');
+            expect(onSuccess).not.toHaveBeenCalled();
+            expect(onFailure).toHaveBeenCalled();
+            expect(request.requestHeaders).toEqual(headers);
+        });
+
+        it("should parse and set specified parameters for GET or HEAD method request", function () {
+            var url = '/test/this/path';
+            var response = 'response text';
+            var urlWithParams = '/test/this/path?param1=val1&param2=val2';
+
+            jasmine.Ajax.stubRequest(urlWithParams).andReturn({
+                status: 200,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                params: {
+                    param1: 'val1',
+                    param2: 'val2'
+                }
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(urlWithParams);
+            expect(request.method).toBe('GET');
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onFailure).not.toHaveBeenCalled();
+
+            url = '/test/this/path?firstParam=1';
+            urlWithParams = '/test/this/path?firstParam=1&param1=val1&param2=val2';
+
+            f4.ajax({
+                url: url,
+                method: 'head',
+                params: {
+                    param1: 'val1',
+                    param2: 'val2'
+                }
+            }, onSuccess, onFailure);
+
+            request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(urlWithParams);
+            expect(request.method).toBe('HEAD');
+        });
+
+        it("should parse and set specified parameters and add 'JSON' header for POST or PUT method request", function () {
+            var url = '/test/this/path';
+            var response = 'response text';
+            var header = 'application/json; charset=UTF-8';
+            var params = {
+                param1: 'val1',
+                param2: 'val2',
+                param3: 'val3'
+            };
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                responseText: response
+            });
+
+            f4.ajax({
+                url: url,
+                method: 'post',
+                params: params
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('POST');
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(request.data()).toEqual(params);
+            expect(request.requestHeaders['Content-Type']).toEqual(header);
+
+            params = {
+                test1: 'val1',
+                test2: [1, 2, 3]
+            };
+
+            f4.ajax({
+                url: url,
+                method: 'put',
+                params: params
+            }, onSuccess, onFailure);
+
+            request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('PUT');
+            expect(request.data()).toEqual(params);
+            expect(request.requestHeaders['Content-Type']).toEqual(header);
+        });
+
+        it("should parse response data of 'html' type", function () {
+            var url = '/test/this/path';
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                contentType: 'text/html;charset=UTF-8',
+                responseText: '<div id="i-am-test-div"><b></b><i></i></div>'
+            });
+
+            f4.ajax({
+                url: url
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('GET');
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(jasmine.any(Object));
+            expect(onSuccess.calls.mostRecent().args[1][0]).toEqual(jasmine.any(HTMLElement));
+            expect(onSuccess.calls.mostRecent().args[1][0].id).toBe('i-am-test-div');
+        });
+
+        it("should parse response data of 'json' type", function () {
+            var url = '/test/this/path';
+            var json = {a: 1, b: [1,2,3], c: 'd'};
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                contentType: 'application/json;charset=UTF-8',
+                responseText: JSON.stringify(json)
+            });
+
+            f4.ajax({
+                url: url,
+                dataType: 'auto'
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('GET');
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(json);
+        });
+
+        it("should parse response according to the specified data type", function () {
+            var url = '/test/this/path';
+            var json = {a: 1, b: [1,2,3], c: 'd'};
+
+            jasmine.Ajax.stubRequest(url).andReturn({
+                status: 200,
+                contentType: 'text/plain;charset=UTF-8',
+                responseText: JSON.stringify(json)
+            });
+
+            f4.ajax({
+                url: url,
+                dataType: 'json'
+            }, onSuccess, onFailure);
+
+            var request = jasmine.Ajax.requests.mostRecent();
+            expect(request.url).toBe(url);
+            expect(request.method).toBe('GET');
+            expect(onFailure).not.toHaveBeenCalled();
+            expect(onSuccess).toHaveBeenCalled();
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(json);
         });
 
     });

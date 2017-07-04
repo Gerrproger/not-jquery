@@ -88,12 +88,16 @@
                 query();
                 break;
             case 'object':
-                if (arg instanceof HTMLElement ||
+                if (arg instanceof HTMLFormElement) {
+                    def([arg]);
+                }
+                else if (arg instanceof HTMLElement ||
                     arg instanceof NodeList ||
                     arg instanceof HTMLCollection ||
                     arg instanceof HTMLDocument) {
                     def(arg);
-                } else {
+                }
+                else {
                     def(d);
                 }
                 break;
@@ -413,14 +417,14 @@
          */
         return function init(settings, success, fail) {
             var set = {
-                method: (settings.method && settings.method.toUpperCase()) || 'GET',
+                method: (settings.method && settings.method.toUpperCase()) || (settings.form ? 'POST' : 'GET'),
                 body: undef(settings.body) ? null : settings.body,
                 timeout: settings.timeout || 10000,
                 dataType: settings.dataType || 'auto'
             };
             var xhr = new XMLHttpRequest();
 
-            if (set.method === 'GET' && settings.params) {
+            if ((set.method === 'GET' || set.method === 'HEAD') && settings.params) {
                 if (settings.url.match(/\?/)) {
                     settings.url += '&';
                 } else {
@@ -558,7 +562,7 @@
     f4.ajax = new Ajax;
     f4.create = new Create;
     f4.proto = f4Proto;
-    f4.version = '0.8.0';
+    f4.version = '0.9.0';
     if (f4Browser) {
         f4.supported = f4Browser.good;
     }
