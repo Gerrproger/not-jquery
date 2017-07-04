@@ -11,7 +11,7 @@
             jasmine.Ajax.uninstall();
         });
 
-        it("should perform request and call the specified function with 'xhr' and 'response' arguments", function () {
+        it("should perform the request and call the specified function with 'xhr' and 'response' arguments", function () {
             var text = 'immediate response';
             jasmine.Ajax.stubRequest('/test/url').andReturn({
                 status: 200,
@@ -28,7 +28,7 @@
             expect(onSuccess.calls.mostRecent().args[1]).toBe(text);
         });
 
-        it("should perform request with correct 'url', 'method', 'user', 'password', 'body' and 'timeout'", function () {
+        it("should perform the request with correct 'url', 'method', 'user', 'password', 'body' and 'timeout'", function () {
             var response = 'response text';
             var url = '/test/correctness';
             var settings = {
@@ -107,9 +107,12 @@
             expect(onSuccess).toHaveBeenCalled();
             expect(onFailure).not.toHaveBeenCalled();
             expect(request.requestHeaders['Content-Type']).toBe('multipart/form-data; charset=UTF-8');
-            formObj.forEach(function (obj) {
-                expect(formData.get(obj.key)).toBe(obj.val);
-            });
+            expect(formData).toEqual(jasmine.any(FormData));
+            if (formData.get) {
+                formObj.forEach(function (obj) {
+                    expect(formData.get(obj.key)).toBe(obj.val);
+                });
+            }
         });
 
         it("should override MimeType if specified", function () {
@@ -162,7 +165,7 @@
             expect(request.requestHeaders).toEqual(headers);
         });
 
-        it("should parse and set specified parameters for GET or HEAD method request", function () {
+        it("should parse and set the specified parameters for the GET or HEAD method request", function () {
             var url = '/test/this/path';
             var response = 'response text';
             var urlWithParams = '/test/this/path?param1=val1&param2=val2';
@@ -276,7 +279,7 @@
 
         it("should parse response data of 'json' type", function () {
             var url = '/test/this/path';
-            var json = {a: 1, b: [1,2,3], c: 'd'};
+            var json = {a: 1, b: [1, 2, 3], c: 'd'};
 
             jasmine.Ajax.stubRequest(url).andReturn({
                 status: 200,
@@ -300,7 +303,7 @@
 
         it("should parse response according to the specified data type", function () {
             var url = '/test/this/path';
-            var json = {a: 1, b: [1,2,3], c: 'd'};
+            var json = {a: 1, b: [1, 2, 3], c: 'd'};
 
             jasmine.Ajax.stubRequest(url).andReturn({
                 status: 200,
