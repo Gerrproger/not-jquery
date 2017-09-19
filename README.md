@@ -1,3 +1,3 @@
-# f4ck-jquery
+# not-jquery
 
 DOCs would be here.

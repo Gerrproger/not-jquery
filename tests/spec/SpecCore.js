@@ -1,54 +1,54 @@
 (function () {
-    describe("F4ck-jquery object", function () {
+    describe("Not-jquery object", function () {
 
         it("should be in window", function () {
-            expect(f4).toBeType('function');
+            expect(nj).toBeType('function');
         });
 
         it("should contain 'ajax' function", function () {
-            expect(f4.ajax).toBeType('function');
+            expect(nj.ajax).toBeType('function');
         });
 
         it("should contain 'create' function", function () {
-            expect(f4.create).toBeType('function');
+            expect(nj.create).toBeType('function');
         });
 
         it("should contain 'proto' object", function () {
-            expect(f4.proto).toBeObject();
+            expect(nj.proto).toBeObject();
         });
 
         it("should contain version number", function () {
-            expect(f4.version).toBeDefined();
+            expect(nj.version).toBeDefined();
         });
 
         it("should return object-like array", function () {
-            expect(f4()).toBeObject();
-            expect(f4().length).toBeType('number');
-            expect(f4().forEach).toBeType('function');
-            expect(f4().slice).toBeType('function');
-            expect(f4().push).toBeType('function');
+            expect(nj()).toBeObject();
+            expect(nj().length).toBeType('number');
+            expect(nj().forEach).toBeType('function');
+            expect(nj().slice).toBeType('function');
+            expect(nj().push).toBeType('function');
         });
 
         it("should be extensible", function () {
-            expect(f4().newMethod).toBeUndefined();
+            expect(nj().newMethod).toBeUndefined();
 
             var spy = jasmine.createSpy('spy');
 
-            f4.proto.newMethod = spy;
-            expect(f4().newMethod).toBeType('function');
+            nj.proto.newMethod = spy;
+            expect(nj().newMethod).toBeType('function');
 
-            f4().newMethod();
+            nj().newMethod();
             expect(spy).toHaveBeenCalled();
         });
 
     });
 
 
-    describe("F4ck-jquery should call the passed function", function () {
+    describe("Not-jquery should call the passed function", function () {
         var spy;
         beforeEach(function () {
             spy = jasmine.createSpy('spy');
-            f4(spy);
+            nj(spy);
         });
 
         it("when DOM is ready", function () {

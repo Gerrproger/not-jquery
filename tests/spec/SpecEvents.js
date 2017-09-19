@@ -8,7 +8,7 @@
         propertyName: 'width',
         pseudoElement: '::after'
     });
-    var el, el2, el3, spy, spy2, spy3, $f4;
+    var el, el2, el3, spy, spy2, spy3, $nj;
     var before = function before() {
         spy = jasmine.createSpy('spy');
         spy2 = jasmine.createSpy('spy2');
@@ -19,16 +19,16 @@
         el.appendChild(el2);
         el.appendChild(el3);
     };
-    var oldTransitionEnd = f4.proto.transitionEnd;
+    var oldTransitionEnd = nj.proto.transitionEnd;
     var modifyProto = function  modifyProto(){
-        var newTransitionEnd = f4.proto.transitionEnd.toString()
+        var newTransitionEnd = nj.proto.transitionEnd.toString()
             .replace(/ev.propertyName/, 'ev.detail.propertyName')
             .replace(/ev.pseudoElement/, 'ev.detail.pseudoElement');
-        f4.proto.transitionEnd = new Function('return ' + newTransitionEnd + '.apply(this, arguments);');
+        nj.proto.transitionEnd = new Function('return ' + newTransitionEnd + '.apply(this, arguments);');
     };
 
     var resetProto = function resetProto(){
-        f4.proto.transitionEnd = oldTransitionEnd;
+        nj.proto.transitionEnd = oldTransitionEnd;
     };
 
     describe("'on' method", function () {
@@ -36,9 +36,9 @@
         beforeEach(before);
 
         it("should call the function on the event", function () {
-            f4(el).on('test1', spy);
-            f4(el).on('test1', spy2);
-            f4(el).on('test1', spy3, 'test');
+            nj(el).on('test1', spy);
+            nj(el).on('test1', spy2);
+            nj(el).on('test1', spy3, 'test');
 
             el.dispatchEvent(event1);
             expect(spy).toHaveBeenCalled();
@@ -47,7 +47,7 @@
         });
 
         it("should call the function with 'event' argument", function () {
-            f4(el).on('test1', spy);
+            nj(el).on('test1', spy);
 
             el.dispatchEvent(event1);
             expect(spy.calls.first().args[0] instanceof Event).toBe(true);
@@ -55,7 +55,7 @@
         });
 
         it("should call the function each time the event fires", function () {
-            f4(el).on('test1', spy);
+            nj(el).on('test1', spy);
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event1);
@@ -65,8 +65,8 @@
         });
 
         it("should work with different events", function () {
-            f4(el).on('test1', spy);
-            f4(el).on('test2', spy2);
+            nj(el).on('test1', spy);
+            nj(el).on('test2', spy2);
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
@@ -76,7 +76,7 @@
         });
 
         it("should work with multiple elements", function () {
-            f4(el).on('test1', spy).find('b').on('test1', spy2);
+            nj(el).on('test1', spy).find('b').on('test1', spy2);
 
             el2.dispatchEvent(event1);
             el3.dispatchEvent(event1);
@@ -85,9 +85,9 @@
         });
 
         it("should return all prototypes", function () {
-            $f4 = f4(el).on('click', spy);
-            Object.keys(f4.proto).forEach(function (name) {
-                expect($f4[name]).toBe(f4.proto[name]);
+            $nj = nj(el).on('click', spy);
+            Object.keys(nj.proto).forEach(function (name) {
+                expect($nj[name]).toBe(nj.proto[name]);
             });
         });
 
@@ -98,13 +98,13 @@
         beforeEach(before);
 
         it("should remove listener", function () {
-            f4(el).on('test1', spy);
-            f4(el).on('test2', spy2);
-            f4(el).on('test1', spy3, 'test');
+            nj(el).on('test1', spy);
+            nj(el).on('test2', spy2);
+            nj(el).on('test1', spy3, 'test');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off();
+            nj(el).off();
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
@@ -114,17 +114,17 @@
         });
 
         it("should remove only the specified 'event' listener", function () {
-            f4(el).on('test1', spy);
-            f4(el).on('test2', spy2);
-            f4(el).on('test1', spy3, 'test');
+            nj(el).on('test1', spy);
+            nj(el).on('test2', spy2);
+            nj(el).on('test1', spy3, 'test');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test2');
+            nj(el).off('test2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test1');
+            nj(el).off('test1');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
@@ -134,17 +134,17 @@
         });
 
         it("should only remove listener of the specified 'event namespace'", function () {
-            f4(el).on('test1', spy, 'n1');
-            f4(el).on('test2', spy2, 'n2');
-            f4(el).on('test1', spy3, 'n2');
+            nj(el).on('test1', spy, 'n1');
+            nj(el).on('test2', spy2, 'n2');
+            nj(el).on('test1', spy3, 'n2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off(null, 'n1');
+            nj(el).off(null, 'n1');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off(undefined, 'n2');
+            nj(el).off(undefined, 'n2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
@@ -154,29 +154,29 @@
         });
 
         it("should only remove listener of the specified 'event' with the specified 'event namespace'", function () {
-            f4(el).on('test1', spy, 'n1');
-            f4(el).on('test2', spy2, 'n1');
-            f4(el).on('test1', spy3, 'n2');
+            nj(el).on('test1', spy, 'n1');
+            nj(el).on('test2', spy2, 'n1');
+            nj(el).on('test1', spy3, 'n2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('testNan', 'n1');
+            nj(el).off('testNan', 'n1');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test1', 'n1');
+            nj(el).off('test1', 'n1');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test1', 'n2');
+            nj(el).off('test1', 'n2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test2', 'n2');
+            nj(el).off('test2', 'n2');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
-            f4(el).off('test2', 'n1');
+            nj(el).off('test2', 'n1');
 
             el.dispatchEvent(event1);
             el.dispatchEvent(event2);
@@ -186,21 +186,21 @@
         });
 
         it("should work with multiple elements", function () {
-            $f4 = f4(el).on('test1', spy).find('b');
-            f4($f4[0]).on('test1', spy2, 'n1');
-            f4($f4[1]).on('test1', spy3, 'n2');
+            $nj = nj(el).on('test1', spy).find('b');
+            nj($nj[0]).on('test1', spy2, 'n1');
+            nj($nj[1]).on('test1', spy3, 'n2');
 
             el2.dispatchEvent(event1);
             el3.dispatchEvent(event1);
-            f4(el).off();
+            nj(el).off();
 
             el2.dispatchEvent(event1);
             el3.dispatchEvent(event1);
-            f4(el).find('b').off(null, 'n1');
+            nj(el).find('b').off(null, 'n1');
 
             el2.dispatchEvent(event1);
             el3.dispatchEvent(event1);
-            f4(el).find('b').off();
+            nj(el).find('b').off();
 
             el2.dispatchEvent(event1);
             el3.dispatchEvent(event1);
@@ -210,9 +210,9 @@
         });
 
         it("should return all prototypes", function () {
-            $f4 = f4(el).off();
-            Object.keys(f4.proto).forEach(function (name) {
-                expect($f4[name]).toBe(f4.proto[name]);
+            $nj = nj(el).off();
+            Object.keys(nj.proto).forEach(function (name) {
+                expect($nj[name]).toBe(nj.proto[name]);
             });
         });
 
@@ -225,7 +225,7 @@
         afterEach(resetProto);
 
         it("should run the specified function on 'transitionend' event", function () {
-            f4(el).transitionEnd(spy);
+            nj(el).transitionEnd(spy);
 
             el.dispatchEvent(eventTransition);
             el2.dispatchEvent(eventTransition);
@@ -234,9 +234,9 @@
         });
 
         it("should work with bubbling and different targets", function () {
-            f4(el).transitionEnd(spy, 'all');
-            f4(el2).transitionEnd(spy2, el2);
-            f4(el2).transitionEnd(spy3, el3);
+            nj(el).transitionEnd(spy, 'all');
+            nj(el2).transitionEnd(spy2, el2);
+            nj(el2).transitionEnd(spy3, el3);
 
             el.dispatchEvent(eventTransition);
             el2.dispatchEvent(eventTransition);
@@ -247,8 +247,8 @@
         });
 
         it("should run the specified function if the 'property name' matches the argument", function () {
-            f4(el).transitionEnd(spy, null, 'height');
-            f4(el).transitionEnd(spy2, null, 'width');
+            nj(el).transitionEnd(spy, null, 'height');
+            nj(el).transitionEnd(spy2, null, 'width');
 
             el.dispatchEvent(eventTransition);
 
@@ -257,10 +257,10 @@
         });
 
         it("should run the specified function if the 'pseudo element' matches the argument", function () {
-            f4(el).transitionEnd(spy, null, 'height', 'after');
-            f4(el).transitionEnd(spy2, null, 'width', 'after');
-            f4(el).transitionEnd(spy2, null, null, 'before');
-            f4(el).transitionEnd(spy3, null, null, 'after');
+            nj(el).transitionEnd(spy, null, 'height', 'after');
+            nj(el).transitionEnd(spy2, null, 'width', 'after');
+            nj(el).transitionEnd(spy2, null, null, 'before');
+            nj(el).transitionEnd(spy3, null, null, 'after');
 
             el.dispatchEvent(eventTransition);
 
@@ -270,8 +270,8 @@
         });
 
         it("should work with multiple elements", function () {
-            $f4 = f4(el).transitionEnd(spy);
-            $f4.find('b').transitionEnd(spy2);
+            $nj = nj(el).transitionEnd(spy);
+            $nj.find('b').transitionEnd(spy2);
 
             el.dispatchEvent(eventTransition);
             el2.dispatchEvent(eventTransition);
@@ -282,9 +282,9 @@
         });
 
         it("should return all prototypes", function () {
-            $f4 = f4(el).transitionEnd(spy);
-            Object.keys(f4.proto).forEach(function (name) {
-                expect($f4[name]).toBe(f4.proto[name]);
+            $nj = nj(el).transitionEnd(spy);
+            Object.keys(nj.proto).forEach(function (name) {
+                expect($nj[name]).toBe(nj.proto[name]);
             });
         });
 

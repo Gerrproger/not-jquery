@@ -1,10 +1,10 @@
 /*!
- * F4ck browser
- * @version  v0.1.0
+ * Not browser
+ * @version  v0.1.1
  * @author   Gerrproger
- * Website:  http://gerrproger.github.io/f4ck-jquery
- * Repo:     http://github.com/gerrproger/f4ck-jquery
- * Issues:   http://github.com/gerrproger/f4ck-jquery/issues
+ * Website:  http://gerrproger.github.io/not-jquery
+ * Repo:     http://github.com/gerrproger/not-jquery
+ * Issues:   http://github.com/gerrproger/not-jquery/issues
  */
 ;(function (root, factory) {
     "use strict";
@@ -16,12 +16,12 @@
             factory(root, document);
         });
     } else {
-        root.f4Browser = factory(root, document);
+        root.notBrowser = factory(root, document);
     }
 }(typeof window !== 'undefined' ? window : this, function (window, document) {
     "use strict";
 
-    var f4Browser = function f4Browser() {
+    var notBrowser = function notBrowser() {
         var el = document.createElement('i');
         return !!el &&
             ('some' in Array.prototype) &&
@@ -32,8 +32,8 @@
             ('transition' in el.style);
 
     };
-    f4Browser.version = '0.1.0';
-    f4Browser.good = f4Browser();
+    notBrowser.version = '0.1.1';
+    notBrowser.good = notBrowser();
 
-    return f4Browser;
+    return notBrowser;
 }));

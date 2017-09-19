@@ -1,10 +1,10 @@
 /*!
- * F4ck jquery
- * @version  v0.8.0
+ * Not jquery
+ * @version  v0.9.1
  * @author   Gerrproger
- * Website:  http://gerrproger.github.io/f4ck-jquery
- * Repo:     http://github.com/gerrproger/f4ck-jquery
- * Issues:   http://github.com/gerrproger/f4ck-jquery/issues
+ * Website:  http://gerrproger.github.io/not-jquery
+ * Repo:     http://github.com/gerrproger/not-jquery
+ * Issues:   http://github.com/gerrproger/not-jquery/issues
  */
 ;(function (root, factory) {
     "use strict";
@@ -16,24 +16,24 @@
             factory(root, document);
         });
     } else {
-        root.f4 = factory(root, document);
+        root.nj = factory(root, document);
     }
 }(typeof window !== 'undefined' ? window : this, function (window, document) {
     "use strict";
 
     var d = document;
-    var f4Browser = window.f4Browser;
+    var notBrowser = window.notBrowser;
 
-    var F4 = function F4(arg) {
-        if (f4Browser && !f4Browser.good) {
+    var Nj = function Nj(arg) {
+        if (notBrowser && !notBrowser.good) {
             return;
         }
         this._addArrayProtos();
         return this.init(arg);
     };
-    var f4Proto = F4.prototype;
+    var njProto = Nj.prototype;
 
-    f4Proto.init = function (arg) {
+    njProto.init = function (arg) {
         var ret = this.find(arg);
 
         if (typeof arg === 'function') {
@@ -47,7 +47,7 @@
         return ret;
     };
 
-    f4Proto._addArrayProtos = function () {
+    njProto._addArrayProtos = function () {
         var prototypes = Object.getOwnPropertyNames(Array.prototype);
         each(prototypes, function (i) {
             var name = prototypes[i];
@@ -56,17 +56,17 @@
                 case 'constructor':
                     break;
                 case 'find':
-                    f4Proto['findIn'] = Array.prototype[name];
+                    njProto['findIn'] = Array.prototype[name];
                     break;
                 default:
-                    f4Proto[name] = Array.prototype[name];
+                    njProto[name] = Array.prototype[name];
             }
         });
         return this;
     };
 
-    f4Proto._fill = function (els) {
-        var res = Object.create(f4Proto);
+    njProto._fill = function (els) {
+        var res = Object.create(njProto);
 
         els = els.filter(function (item, pos) {
             return els.indexOf(item) === pos;
@@ -79,7 +79,7 @@
         return res;
     };
 
-    f4Proto.find = function (arg) {
+    njProto.find = function (arg) {
         var self = this;
         var elements = [];
         var HTMLDocument = HTMLDocument || Document;
@@ -122,12 +122,12 @@
         return this._fill(elements);
     };
 
-    f4Proto.on = function (ev, f, hash) {
+    njProto.on = function (ev, f, hash) {
         if (undef(hash)) {
             hash = 'default';
         }
         this.forEach(function (el) {
-            var evs = el.f4Events;
+            var evs = el.njEvents;
             if (evs) {
                 if (evs[ev]) {
                     if (evs[ev][hash]) {
@@ -140,7 +140,7 @@
                     evs[ev][hash] = [f];
                 }
             } else {
-                evs = el.f4Events = {};
+                evs = el.njEvents = {};
                 evs[ev] = {};
                 evs[ev][hash] = [f];
             }
@@ -150,10 +150,10 @@
         return this;
     };
 
-    f4Proto.off = function (ev, hash) {
+    njProto.off = function (ev, hash) {
         var noHash = undef(hash);
         this.forEach(function (el) {
-            var evs = el.f4Events;
+            var evs = el.njEvents;
             if (evs) {
                 if (!ev) {
                     if (noHash) {
@@ -164,7 +164,7 @@
                                 });
                             });
                         });
-                        delete el.f4Events;
+                        delete el.njEvents;
                     } else {
                         each(evs, function (e) {
                             if (evs[e][hash]) {
@@ -200,7 +200,7 @@
         return this;
     };
 
-    f4Proto.closest = function (arg) {
+    njProto.closest = function (arg) {
         var res = [];
         this.forEach(function (el) {
             if (undef(arg) && el.parentElement) {
@@ -219,7 +219,7 @@
         return this._fill(res);
     };
 
-    f4Proto.remove = function () {
+    njProto.remove = function () {
         this.forEach(function (el) {
             el.parentElement.removeChild(el);
         });
@@ -227,7 +227,7 @@
         return this;
     };
 
-    f4Proto.html = function (arg) {
+    njProto.html = function (arg) {
         var res = this.map(function (el) {
             if (undef(arg)) {
                 return el.innerHTML.trim();
@@ -238,7 +238,7 @@
         return undef(arg) ? arrUnwrap(res) : this;
     };
 
-    f4Proto.text = function (arg) {
+    njProto.text = function (arg) {
         var res = this.map(function (el) {
             if (undef(arg)) {
                 return el.textContent.trim();
@@ -249,7 +249,7 @@
         return undef(arg) ? arrUnwrap(res) : this;
     };
 
-    f4Proto.attr = function (name, val) {
+    njProto.attr = function (name, val) {
         var res = this.map(function (el) {
             if (undef(val)) {
                 if (undef(name)) {
@@ -267,7 +267,7 @@
         return undef(val) ? arrUnwrap(res) : this;
     };
 
-    f4Proto.data = function (arg) {
+    njProto.data = function (arg) {
         var dat = 'data-';
         if (typeof arg === 'object') {
             each(arg, function (key) {
@@ -298,7 +298,7 @@
         }
     };
 
-    f4Proto.removeAttr = function (arg) {
+    njProto.removeAttr = function (arg) {
         this.forEach(function (el) {
             el.removeAttribute(arg);
         });
@@ -306,13 +306,13 @@
         return this;
     };
 
-    f4Proto.removeData = function (arg) {
+    njProto.removeData = function (arg) {
         arg = 'data-' + toDashed(arg);
 
         return this.removeAttr(arg);
     };
 
-    f4Proto.addClass = function () {
+    njProto.addClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
             makeArray(classes).forEach(function (cl) {
@@ -323,7 +323,7 @@
         return this;
     };
 
-    f4Proto.removeClass = function () {
+    njProto.removeClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
             makeArray(classes).forEach(function (cl) {
@@ -334,7 +334,7 @@
         return this;
     };
 
-    f4Proto.toggleClass = function () {
+    njProto.toggleClass = function () {
         var classes = prettyClass(arguments);
         this.forEach(function (el) {
             makeArray(classes).forEach(function (cl) {
@@ -345,7 +345,7 @@
         return this;
     };
 
-    f4Proto.hasClass = function (arg) {
+    njProto.hasClass = function (arg) {
         var has = true;
         var notHas = true;
         var res = this.map(function (el) {
@@ -368,7 +368,7 @@
         return arrUnwrap(res);
     };
 
-    f4Proto.transitionEnd = function (f, target, propName, pseudoEl) {
+    njProto.transitionEnd = function (f, target, propName, pseudoEl) {
         return this.on('transitionend', function (ev) {
             var bf = f.bind(this, ev);
             if ((propName && propName !== ev.propertyName) || (pseudoEl && ('::' + pseudoEl) !== ev.pseudoElement)) {
@@ -387,14 +387,14 @@
                 return;
             }
             return bf();
-        }, 'f4TransitionEnd');
+        }, 'njTransitionEnd');
     };
 
 
     var Create = function Create() {
         return function init(str) {
             var res = new DOMParser().parseFromString(str, 'text/html');
-            return new F4(res.body.children);
+            return new Nj(res.body.children);
         };
     };
 
@@ -440,7 +440,7 @@
             if (settings.form) {
                 xhr.setRequestHeader('Content-Type', 'multipart/form-data; charset=UTF-8');
                 if (set.body === null) {
-                    set.body = new FormData(new F4(settings.form)[0]);
+                    set.body = new FormData(new Nj(settings.form)[0]);
                 }
             }
             else if ((set.method === 'POST' || set.method === 'PUT') && set.body === null && settings.params) {
@@ -556,16 +556,16 @@
     }
 
 
-    var f4 = function f4(arg) {
-        return new F4(arg);
+    var nj = function nj(arg) {
+        return new Nj(arg);
     };
-    f4.ajax = new Ajax;
-    f4.create = new Create;
-    f4.proto = f4Proto;
-    f4.version = '0.9.0';
-    if (f4Browser) {
-        f4.supported = f4Browser.good;
+    nj.ajax = new Ajax;
+    nj.create = new Create;
+    nj.proto = njProto;
+    nj.version = '0.9.1';
+    if (notBrowser) {
+        nj.supported = notBrowser.good;
     }
 
-    return f4;
+    return nj;
 }));

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>F4ck jquery</title>
+    <title>Not jquery</title>
     <style>
         html, body {
             margin: 0;
@@ -54,33 +54,33 @@
             font-size: 13px;
         }
     </style>
-    <script src="src/f4ck-browser.js"></script>
-    <script src="src/f4ck-jquery.js"></script>
+    <script src="src/not-browser.js"></script>
+    <script src="src/not-jquery.js"></script>
     <script>
-        f4(function () {
+        nj(function () {
             console.log('all is good', this);
-            var main = f4('main')[0];
-            main.insertBefore(f4.create('<div class="works">Works! <i>(v' + f4.version + ')</i></div>')[0], main.firstChild);
+            var main = nj('main')[0];
+            main.insertBefore(nj.create('<div class="works">Works! <i>(v' + nj.version + ')</i></div>')[0], main.firstChild);
         });
-        if (f4.supported === false) {
-            alert('F4 does not work in this bad browser!');
+        if (nj.supported === false) {
+            alert('Not-jquery does not work in this bad browser!');
         }
     </script>
 </head>
 <body>
 <header>
-    <i>F4</i>ck jquery
+    <i>Not</i> jquery
 </header>
 <main>
     <div class="download">
-        <a download href="dist/f4ck-jquery.min.js" target="_blank">Download compressed F4ck-jquery</a>
-        <a download href="dist/f4ck-jquery-noajax.min.js" target="_blank">Download compressed version without Ajax</a>
-        <a download href="dist/f4ck-browser.min.js" target="_blank">Download compressed F4ck-browser</a>
-        <a download href="src/f4ck-jquery.js" target="_blank">Download uncompressed F4ck-jquery</a>
+        <a download href="dist/not-jquery.min.js" target="_blank">Download compressed Not-jquery</a>
+        <a download href="dist/not-jquery-noajax.min.js" target="_blank">Download compressed version without Ajax</a>
+        <a download href="dist/not-browser.min.js" target="_blank">Download compressed Not-browser</a>
+        <a download href="src/not-jquery.js" target="_blank">Download uncompressed Not-jquery</a>
     </div>
     <div>
         <a class="link" href="tests/SpecRunner.html" target="_blank">Open Tests</a>
-        <a class="link" href="https://github.com/Gerrproger/f4ck-jquery" target="_blank">Open GitHub</a>
+        <a class="link" href="https://github.com/Gerrproger/not-jquery" target="_blank">Open GitHub</a>
     </div>
 </main>
 </body>

@@ -1,5 +1,5 @@
 (function () {
-    describe("F4ck-jquery Ajax", function () {
+    describe("Not-jquery Ajax", function () {
 
         var onSuccess, onFailure;
         beforeEach(function () {
@@ -18,7 +18,7 @@
                 responseText: text
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: '/test/url'
             }, onSuccess, onFailure);
 
@@ -44,7 +44,7 @@
                 responseText: response
             });
 
-            f4.ajax(settings, onSuccess, onFailure);
+            nj.ajax(settings, onSuccess, onFailure);
 
             var request = jasmine.Ajax.requests.mostRecent();
             expect(request.url).toBe(url);
@@ -68,7 +68,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 beforeSend: onBeforeSend
             }, onSuccess, onFailure);
@@ -95,7 +95,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 form: el
             }, onSuccess, onFailure);
@@ -125,7 +125,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 method: 'put',
                 overrideMimeType: mime
@@ -152,7 +152,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 headers: headers
             }, onSuccess, onFailure);
@@ -175,7 +175,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 params: {
                     param1: 'val1',
@@ -192,7 +192,7 @@
             url = '/test/this/path?firstParam=1';
             urlWithParams = '/test/this/path?firstParam=1&param1=val1&param2=val2';
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 method: 'head',
                 params: {
@@ -221,7 +221,7 @@
                 responseText: response
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 method: 'post',
                 params: params
@@ -240,7 +240,7 @@
                 test2: [1, 2, 3]
             };
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 method: 'put',
                 params: params
@@ -262,7 +262,7 @@
                 responseText: '<div id="i-am-test-div"><b></b><i></i></div>'
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url
             }, onSuccess, onFailure);
 
@@ -287,7 +287,7 @@
                 responseText: JSON.stringify(json)
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 dataType: 'auto'
             }, onSuccess, onFailure);
@@ -311,7 +311,7 @@
                 responseText: JSON.stringify(json)
             });
 
-            f4.ajax({
+            nj.ajax({
                 url: url,
                 dataType: 'json'
             }, onSuccess, onFailure);
