@@ -24,8 +24,8 @@
 
             expect(onSuccess).toHaveBeenCalled();
             expect(onFailure).not.toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
-            expect(onSuccess.calls.mostRecent().args[1]).toBe(text);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(jasmine.Ajax.requests.mostRecent());
+            expect(onSuccess.calls.mostRecent().args[0]).toBe(text);
         });
 
         it("should perform the request with correct 'url', 'method', 'user', 'password', 'body' and 'timeout'", function () {
@@ -55,7 +55,7 @@
             expect(request.timeout).toBe(settings.timeout);
             expect(onSuccess).toHaveBeenCalled();
             expect(onFailure).not.toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[1]).toBe(response);
+            expect(onSuccess.calls.mostRecent().args[0]).toBe(response);
         });
 
         it("should call 'beforeSend' function if specified", function () {
@@ -78,7 +78,7 @@
             expect(request.method).toBe('GET');
             expect(onSuccess).toHaveBeenCalled();
             expect(onFailure).not.toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[1]).toBe(response);
+            expect(onSuccess.calls.mostRecent().args[0]).toBe(response);
             expect(onBeforeSend).toHaveBeenCalled();
             expect(onBeforeSend.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
         });
@@ -121,7 +121,7 @@
             var mime = 'test/plain';
 
             jasmine.Ajax.stubRequest(url).andReturn({
-                status: 200,
+                status: 201,
                 responseText: response
             });
 
@@ -162,6 +162,8 @@
             expect(request.method).toBe('GET');
             expect(onSuccess).not.toHaveBeenCalled();
             expect(onFailure).toHaveBeenCalled();
+            expect(onFailure.calls.mostRecent().args[1]).toEqual(jasmine.Ajax.requests.mostRecent());
+            expect(onFailure.calls.mostRecent().args[0]).toBe(response);
             expect(request.requestHeaders).toEqual(headers);
         });
 
@@ -217,7 +219,7 @@
             };
 
             jasmine.Ajax.stubRequest(url).andReturn({
-                status: 200,
+                status: 201,
                 responseText: response
             });
 
@@ -271,10 +273,10 @@
             expect(request.method).toBe('GET');
             expect(onFailure).not.toHaveBeenCalled();
             expect(onSuccess).toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
-            expect(onSuccess.calls.mostRecent().args[1]).toEqual(jasmine.any(Object));
-            expect(onSuccess.calls.mostRecent().args[1][0]).toEqual(jasmine.any(HTMLElement));
-            expect(onSuccess.calls.mostRecent().args[1][0].id).toBe('i-am-test-div');
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(jasmine.any(Object));
+            expect(onSuccess.calls.mostRecent().args[0][0]).toEqual(jasmine.any(HTMLElement));
+            expect(onSuccess.calls.mostRecent().args[0][0].id).toBe('i-am-test-div');
         });
 
         it("should parse response data of 'json' type", function () {
@@ -297,8 +299,8 @@
             expect(request.method).toBe('GET');
             expect(onFailure).not.toHaveBeenCalled();
             expect(onSuccess).toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
-            expect(onSuccess.calls.mostRecent().args[1]).toEqual(json);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(json);
         });
 
         it("should parse response according to the specified data type", function () {
@@ -321,8 +323,8 @@
             expect(request.method).toBe('GET');
             expect(onFailure).not.toHaveBeenCalled();
             expect(onSuccess).toHaveBeenCalled();
-            expect(onSuccess.calls.mostRecent().args[0]).toEqual(request);
-            expect(onSuccess.calls.mostRecent().args[1]).toEqual(json);
+            expect(onSuccess.calls.mostRecent().args[1]).toEqual(request);
+            expect(onSuccess.calls.mostRecent().args[0]).toEqual(json);
         });
 
     });

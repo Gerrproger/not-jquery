@@ -1,6 +1,6 @@
 /*!
  * Not jquery
- * @version  v0.9.1
+ * @version  v0.9.2
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/not-jquery
  * Repo:     http://github.com/gerrproger/not-jquery
@@ -458,15 +458,15 @@
             }
 
             xhr.onload = function () {
-                if (xhr.status === 200 && success) {
-                    success(xhr, response(xhr));
+                if (parseInt(xhr.status / 100) === 2 && success) {
+                    success(response(xhr), xhr);
                 } else if (fail) {
-                    fail(xhr);
+                    fail(response(xhr), xhr);
                 }
             };
             xhr.onerror = function () {
                 if (fail) {
-                    fail(xhr);
+                    fail(response(xhr), xhr);
                 }
             };
 
@@ -562,7 +562,7 @@
     nj.ajax = new Ajax;
     nj.create = new Create;
     nj.proto = njProto;
-    nj.version = '0.9.1';
+    nj.version = '0.9.2';
     if (notBrowser) {
         nj.supported = notBrowser.good;
     }
