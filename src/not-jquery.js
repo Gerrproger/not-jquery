@@ -1,6 +1,6 @@
 /*!
  * Not jquery
- * @version  v0.9.2
+ * @version  v0.9.3
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/not-jquery
  * Repo:     http://github.com/gerrproger/not-jquery
@@ -413,6 +413,7 @@
          * @param {object} settings.headers
          * @param {string} settings.dataType (html, json, text, auto)
          * @param {function} settings.beforeSend
+         * @param {function} settings.readyStateChange
          * @param {string} settings.overrideMimeType
          */
         return function init(settings, success, fail) {
@@ -457,15 +458,16 @@
                 xhr.overrideMimeType(settings.overrideMimeType);
             }
 
-            xhr.onload = function () {
+            xhr.onreadystatechange = function () {
+                if (settings.readyStateChange) {
+                    settings.readyStateChange(xhr);
+                }
+                if (xhr.readyState !== 4) {
+                    return;
+                }
                 if (parseInt(xhr.status / 100) === 2 && success) {
                     success(response(xhr), xhr);
                 } else if (fail) {
-                    fail(response(xhr), xhr);
-                }
-            };
-            xhr.onerror = function () {
-                if (fail) {
                     fail(response(xhr), xhr);
                 }
             };
@@ -478,7 +480,11 @@
             function response(xhr) {
                 var str = xhr.responseText;
                 if (set.dataType === 'auto') {
-                    var contentType = xhr.getResponseHeader('Content-Type').split(/;/)[0];
+                    var contentTypeHeader = xhr.getResponseHeader('Content-Type');
+                    if (!contentTypeHeader) {
+                        return str;
+                    }
+                    var contentType = contentTypeHeader.split(/;/)[0];
                     switch (contentType) {
                         case 'text/html':
                             set.dataType = 'html';
@@ -562,7 +568,7 @@
     nj.ajax = new Ajax;
     nj.create = new Create;
     nj.proto = njProto;
-    nj.version = '0.9.2';
+    nj.version = '0.9.3';
     if (notBrowser) {
         nj.supported = notBrowser.good;
     }

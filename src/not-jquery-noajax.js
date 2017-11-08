@@ -1,6 +1,6 @@
 /*!
  * Not jquery no Ajax
- * @version  v0.9.2
+ * @version  v0.9.3
  * @author   Gerrproger
  * Website:  http://gerrproger.github.io/not-jquery
  * Repo:     http://github.com/gerrproger/not-jquery
@@ -454,7 +454,7 @@
     };
     nj.create = new Create;
     nj.proto = njProto;
-    nj.version = '0.9.2';
+    nj.version = '0.9.3';
     nj.noAjax = true;
     if (notBrowser) {
         nj.supported = notBrowser.good;

@@ -58,8 +58,9 @@
             expect(onSuccess.calls.mostRecent().args[0]).toBe(response);
         });
 
-        it("should call 'beforeSend' function if specified", function () {
+        it("should call 'beforeSend' and 'readyStateChange' function if specified", function () {
             var onBeforeSend = jasmine.createSpy('onBeforeSend');
+            var onReadyStateChange = jasmine.createSpy('onReadyStateChange');
             var url = '/test/this/path';
             var response = 'response text';
 
@@ -70,7 +71,8 @@
 
             nj.ajax({
                 url: url,
-                beforeSend: onBeforeSend
+                beforeSend: onBeforeSend,
+                readyStateChange: onReadyStateChange
             }, onSuccess, onFailure);
 
             var request = jasmine.Ajax.requests.mostRecent();
@@ -81,6 +83,8 @@
             expect(onSuccess.calls.mostRecent().args[0]).toBe(response);
             expect(onBeforeSend).toHaveBeenCalled();
             expect(onBeforeSend.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
+            expect(onReadyStateChange).toHaveBeenCalledTimes(2);
+            expect(onReadyStateChange.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
         });
 
         it("should send form data with the right header if specified 'form' attribute", function () {
