@@ -1,0 +1,21 @@
+{
+  "name": "not-jquery",
+  "version": "0.9.4",
+  "author": "Gerrproger",
+  "license": "MIT",
+  "description": "A set of libraries for convenient browser extensions development",
+  "repository": "https://github.com/Gerrproger/not-jquery",
+  "main": "dist/not-jquery.min.js",
+  "scripts": {
+    "lint": "eslint . -c .eslintrc.js",
+    "lint:fix": "eslint . -c .eslintrc.js --fix",
+    "test": "open tests/SpecRunner.html",
+    "build": "rimraf dist && esbuild --platform=browser --target=es6,ie10 --minify --outdir=dist --out-extension:.js=.min.js src/not-jquery.js src/not-browser.js src/not-jquery-noajax.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.10",
+    "eslint": "^8.34.0",
+    "open": "^8.4.2",
+    "rimraf": "^4.1.2"
+  }
+}

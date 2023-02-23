@@ -1,5 +1,5 @@
 (function () {
-    describe("Not-jquery Ajax", function () {
+    describe('Not-jquery Ajax', function () {
 
         var onSuccess, onFailure;
         beforeEach(function () {
@@ -11,7 +11,7 @@
             jasmine.Ajax.uninstall();
         });
 
-        it("should perform the request and call the specified function with 'xhr' and 'response' arguments", function () {
+        it('should perform the request and call the specified function with \'xhr\' and \'response\' arguments', function () {
             var text = 'immediate response';
             jasmine.Ajax.stubRequest('/test/url').andReturn({
                 status: 200,
@@ -28,7 +28,7 @@
             expect(onSuccess.calls.mostRecent().args[0]).toBe(text);
         });
 
-        it("should perform the request with correct 'url', 'method', 'user', 'password', 'body' and 'timeout'", function () {
+        it('should perform the request with correct \'url\', \'method\', \'user\', \'password\', \'body\' and \'timeout\'', function () {
             var response = 'response text';
             var url = '/test/correctness';
             var settings = {
@@ -58,7 +58,7 @@
             expect(onSuccess.calls.mostRecent().args[0]).toBe(response);
         });
 
-        it("should call 'beforeSend' and 'readyStateChange' function if specified", function () {
+        it('should call \'beforeSend\' and \'readyStateChange\' function if specified', function () {
             var onBeforeSend = jasmine.createSpy('onBeforeSend');
             var onReadyStateChange = jasmine.createSpy('onReadyStateChange');
             var url = '/test/this/path';
@@ -87,7 +87,7 @@
             expect(onReadyStateChange.calls.mostRecent().args[0]).toEqual(jasmine.Ajax.requests.mostRecent());
         });
 
-        it("should send form data with the right header if specified 'form' attribute", function () {
+        it('should send form data with the right header if specified \'form\' attribute', function () {
             var url = '/test/this/path';
             var response = 'response text';
             var formObj = [{key: 'field1', val: 'value1'}, {key: 'field2', val: 'value2'}];
@@ -119,7 +119,7 @@
             }
         });
 
-        it("should override MimeType if specified", function () {
+        it('should override MimeType if specified', function () {
             var url = '/test/this/path';
             var response = 'response text';
             var mime = 'test/plain';
@@ -143,7 +143,7 @@
             expect(request.overriddenMimeType).toBe(mime);
         });
 
-        it("should set request headers if specified", function () {
+        it('should set request headers if specified', function () {
             var url = '/test/this/path';
             var response = 'response text';
             var headers = {
@@ -171,7 +171,7 @@
             expect(request.requestHeaders).toEqual(headers);
         });
 
-        it("should parse and set the specified parameters for the GET or HEAD method request", function () {
+        it('should parse and set the specified parameters for the GET or HEAD method request', function () {
             var url = '/test/this/path';
             var response = 'response text';
             var urlWithParams = '/test/this/path?param1=val1&param2=val2';
@@ -212,7 +212,7 @@
             expect(request.method).toBe('HEAD');
         });
 
-        it("should parse and set specified parameters and add 'JSON' header for POST or PUT method request", function () {
+        it('should parse and set specified parameters and add \'JSON\' header for POST or PUT method request', function () {
             var url = '/test/this/path';
             var response = 'response text';
             var header = 'application/json; charset=UTF-8';
@@ -259,7 +259,7 @@
             expect(request.requestHeaders['Content-Type']).toEqual(header);
         });
 
-        it("should parse response data of 'html' type", function () {
+        it('should parse response data of \'html\' type', function () {
             var url = '/test/this/path';
 
             jasmine.Ajax.stubRequest(url).andReturn({
@@ -283,7 +283,7 @@
             expect(onSuccess.calls.mostRecent().args[0][0].id).toBe('i-am-test-div');
         });
 
-        it("should parse response data of 'json' type", function () {
+        it('should parse response data of \'json\' type', function () {
             var url = '/test/this/path';
             var json = {a: 1, b: [1, 2, 3], c: 'd'};
 
@@ -307,7 +307,7 @@
             expect(onSuccess.calls.mostRecent().args[0]).toEqual(json);
         });
 
-        it("should parse response according to the specified data type", function () {
+        it('should parse response according to the specified data type', function () {
             var url = '/test/this/path';
             var json = {a: 1, b: [1, 2, 3], c: 'd'};
 
